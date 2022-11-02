@@ -11,21 +11,25 @@ export class AppComponent implements OnInit {
   title = 'AngularClientDemo';
   product: any;
   display = "none";
+  info="none";
   Addproduct: ProductModel = {
-    name: 'Angular Demo',
-    description: 'Angular demo by Kaveen',
-    sku: 'abc',
+    name: 'Name..',
+    description: 'Description..',
+    sku: ' ',
     date_created: new Date(),
-    units_in_stock: 1,
-    unit_price: 99.99,
+    units_in_stock: 0,
+    unit_price: 0,
     last_updated: new Date(),
     active: true,
-    image_url: 'abc',
-    id: 11,
+    image_url: ' ',
+    id: 0,
     category_id: 1,
   };
   AddSuccess: boolean = false;
   DeleteSuccess: boolean = false;
+  IsDeleteClicked: boolean = false;
+  ModalLable:string='Add Product';
+  InfoLable:string='Product Added successfully!';
 
   constructor(private http: HttpClient) {}
 
@@ -34,6 +38,13 @@ export class AppComponent implements OnInit {
       next: (Response) => (this.product = Response),
       error: (error) => console.log(error),
     });
+  }
+
+  SaveChages(){
+    if(this.IsDeleteClicked)
+    this.delete();
+    else
+    this.Addingproduct();
   }
 
   Addingproduct() {
@@ -50,16 +61,28 @@ export class AppComponent implements OnInit {
   }
 
   delete() {
+    this.onCloseHandled();
+          this.openInfoModal();
     return this.http
       .delete('https://localhost:5001/api/product/' + this.Addproduct.id)
       .subscribe({
         next: (Response) => {
           this.DeleteSuccess = true;
+          this.onCloseHandled();
+          this.openInfoModal();
           return console.log(Response);
         },
         error: (error) => console.log(error),
       });
   }
+
+  DeleteClick(){
+    this.ModalLable='Delete Product by Id';
+    this.InfoLable='Product deleted successfully!';
+    this.IsDeleteClicked=true;
+    this.openModal();
+  }
+
   openModal() {
     this.display = "block";
   }
@@ -67,4 +90,14 @@ export class AppComponent implements OnInit {
   onCloseHandled() {
     this.display = "none";
   }
+
+  openInfoModal() {
+    this.display = "block";
+  }
+  
+  onCloseInfoHandled() {
+    this.display = "none";
+  }
+
+
 }
