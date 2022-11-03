@@ -1,0 +1,48 @@
+<div class="container mt-4" style="opacity: 100%;" >
+    <div class="p-4 p-md-5 rounded text-bg-dark">
+      <h2 class="px-2 text-white">Available Products!</h2>
+      <div style="overflow-y: scroll; height: 250px;">
+        <table class="table text-white">
+          <thead class="thead-light">
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Unit Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of product">
+              <td scope="row">{{ p.id }}</td>
+              <td>{{ p.name }}</td>
+              <td>{{ p.description }}</td>
+              <td>{{ p.unit_price }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    
+      <div class="nav col-12 me-lg-auto mb-2 mt-2 text-end">
+        <button
+          type="button"
+          class="btn btn-warning"
+          style="margin: 5px"
+          (click)="openModal()"
+        >
+          Add Product
+        </button>
+        <button type="button" class="btn btn-warning" 
+        style="margin: 5px"
+        (click)="DeleteClick()"
+        >
+          Delete Product
+        </button>
+        <button type="button" class="btn btn-warning" 
+        style="margin: 5px"
+        (click)="UpdateClick()"
+        >
+          Update Product
+        </button>
+      </div>
+    </div>
+  </div>
