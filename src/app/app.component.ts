@@ -28,12 +28,17 @@ export class AppComponent implements OnInit {
   AddSuccess: boolean = false;
   DeleteSuccess: boolean = false;
   IsDeleteClicked: boolean = false;
+  IsUpdateClicked: boolean = false;
   ModalLable:string='Add Product';
   InfoLable:string='Product Added successfully!';
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    this.LoadProducts();
+  }
+
+  LoadProducts(){
     this.http.get('https://localhost:5001/api/product').subscribe({
       next: (Response) => (this.product = Response),
       error: (error) => console.log(error),
@@ -43,12 +48,15 @@ export class AppComponent implements OnInit {
   SaveChages(){
     if(this.IsDeleteClicked)
     this.delete();
+    else if(this.IsUpdateClicked)
+    this.update();
     else
     this.Addingproduct();
   }
 
   Addingproduct() {
-    console.log(this.Addproduct);
+    this.onCloseHandled();
+    this.openInfoModal();
     return this.http
       .post('https://localhost:5001/api/product', this.Addproduct)
       .subscribe({
@@ -61,13 +69,28 @@ export class AppComponent implements OnInit {
   }
 
   delete() {
-    this.onCloseHandled();
-          this.openInfoModal();
-    return this.http
+     this.http
       .delete('https://localhost:5001/api/product/' + this.Addproduct.id)
       .subscribe({
         next: (Response) => {
           this.DeleteSuccess = true;
+          this.onCloseHandled();
+          this.openInfoModal();
+          return console.log(Response);
+        },
+        error: (error) => console.log(error),
+      });
+      this.onCloseHandled();
+      this.openInfoModal();
+  }
+
+  update() {
+    this.onCloseHandled();
+          this.openInfoModal();
+    return this.http
+      .put('https://localhost:5001/api/product/' + this.Addproduct.id, this.Addproduct)
+      .subscribe({
+        next: (Response) => {
           this.onCloseHandled();
           this.openInfoModal();
           return console.log(Response);
@@ -83,20 +106,35 @@ export class AppComponent implements OnInit {
     this.openModal();
   }
 
+  UpdateClick(){
+    this.ModalLable='Update Product by Id';
+    this.InfoLable='Product updated successfully!';
+    this.IsUpdateClicked=true;
+    this.openModal();
+  }
+
   openModal() {
     this.display = "block";
   }
   
   onCloseHandled() {
+    this.IsDeleteClicked=false;
+    this.IsUpdateClicked=false;
     this.display = "none";
   }
 
   openInfoModal() {
-    this.display = "block";
+    this.info = "block";
   }
   
   onCloseInfoHandled() {
-    this.display = "none";
+    this.LoadProducts();
+    this.ModalLable='Add Product';
+    this.InfoLable='Product Added successfully!';
+    this.IsDeleteClicked=false;
+    this.IsUpdateClicked=false;
+    this.info = "none";
+
   }
 
 

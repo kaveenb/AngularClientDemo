@@ -61,7 +61,7 @@
       </table>
     </div>
   
-    <div class="nav col-12 me-lg-auto mb-2 text-end">
+    <div class="nav col-12 me-lg-auto mb-2 mt-2 text-end">
       <button
         type="button"
         class="btn btn-warning"
@@ -75,6 +75,12 @@
       (click)="DeleteClick()"
       >
         Delete Product
+      </button>
+      <button type="button" class="btn btn-warning" 
+      style="margin: 5px"
+      (click)="UpdateClick()"
+      >
+        Update Product
       </button>
     </div>
   </div>
@@ -195,19 +201,17 @@
       </div>
 
       <div class="modal-body">   
-          <div class="hstack gap-3">
-            <h6 class="modal-title w-25" id="exampleModalLabel">{{InfoLable}}</h6>  
+            <h6 class="modal-title" id="exampleModalLabel">{{InfoLable}}</h6>  
           </div>         
           <div class="modal-footer mt-3">
             <button
               type="button"
               class="btn btn-secondary"
               data-bs-dismiss="modal"
-              (click)="onCloseHandled()"
+              (click)="onCloseInfoHandled()"
             >
               Close
             </button>
-          </div>      
       </div>     
     </div>
   </div>
