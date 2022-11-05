@@ -1,5 +1,7 @@
-<div class="container mt-4" style="opacity: 100%;" >
-    <div class="p-4 p-md-5 rounded text-bg-dark">
+<app-navbar (IsLoggedInEmit)="SetLogin($event)"></app-navbar>
+<div class="container mt-4" >
+  <div *ngIf="!IsServiceUp" class="p-3 mb-2 bg-danger text-white rounded">Service not up!</div>
+    <div *ngIf="IsServiceUp" class="p-4 p-md-5 rounded text-bg-dark">
       <h2 class="px-2 text-white">Available Products!</h2>
       <div style="overflow-y: scroll; height: 250px;">
         <table class="table text-white">
@@ -22,7 +24,7 @@
         </table>
       </div>
     
-      <div class="nav col-12 me-lg-auto mb-2 mt-2 text-end">
+      <div *ngIf="IsLoggedIn" class="nav col-12 me-lg-auto mb-2 mt-2 text-end">
         <button
           type="button"
           class="btn btn-warning"
@@ -46,3 +48,134 @@
       </div>
     </div>
   </div>
+
+  <!--Add/Delete Modal-->
+
+<div
+[ngStyle]="{ 'display': display }"
+class="modal" tabindex="-1" role="dialog"
+>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">{{ModalLable}}</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+        (click)="onCloseHandled()"
+      ></button>
+    </div>
+
+    <div class="modal-body">
+      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" (ngSubmit)="SaveChages()">
+        <div class="hstack gap-3">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Id:</h6>
+          <input
+          name="id"
+          [(ngModel)]="Addproduct.id"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Id..."
+            aria-label="Search"
+          />
+        </div>
+        <div *ngIf="!IsDeleteClicked" class="hstack gap-3">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Name:</h6>
+          <input
+          name="name"
+          [(ngModel)]="Addproduct.name"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Name..."
+            aria-label="Search"
+          />
+        </div>
+        <div class="hstack gap-3" *ngIf="!IsDeleteClicked">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Description:</h6>
+          <input
+          name="description"
+          [(ngModel)]="Addproduct.description"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="description..."
+            aria-label="Search"
+          />
+        </div>
+        <div class="hstack gap-3" *ngIf="!IsDeleteClicked">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Price:</h6>
+          <input
+          name="unit_price"
+          [(ngModel)]="Addproduct.unit_price"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Price..."
+            aria-label="Search"
+          />
+        </div>
+        <div class="hstack gap-3" *ngIf="!IsDeleteClicked">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Stocks Available:</h6>
+          <input
+          name="units_in_stock"
+          [(ngModel)]="Addproduct.units_in_stock"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Stocks Available..."
+            aria-label="Search"
+          />
+        </div>
+        
+        <div class="modal-footer mt-3">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="onCloseHandled()"
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            class="btn btn-warning"
+           
+          >
+            Save changes
+          </button>
+        </div>
+      </form>
+    </div>
+
+    
+  </div>
+</div>
+</div>
+
+<!--Info Modal-->
+
+<div
+[ngStyle]="{ 'display': info }"
+class="modal" tabindex="-1" role="dialog"
+>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Info!</h5>
+    </div>
+
+    <div class="modal-body">   
+          <h6 class="modal-title" id="exampleModalLabel">{{InfoLable}}</h6>  
+        </div>         
+        <div class="modal-footer mt-3">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="onCloseInfoHandled()"
+          >
+            Close
+          </button>
+    </div>     
+  </div>
+</div>
+</div>

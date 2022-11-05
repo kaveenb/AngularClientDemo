@@ -1,0 +1,145 @@
+<header class="p-3 text-bg-dark">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <img
+          style="height: 3%; width: 3%"
+          src="assets/k-globe-seeklogo.com.svg"
+        />
+  
+        <ul
+          class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0"
+        >
+          <li><a href="#" class="nav-link px-2 text-white" routerLinkActive="active">Home</a></li>
+          <li><a routerLink="/feature" class="nav-link px-2 text-white">Features</a></li>
+          <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
+          <li><a routerLink="/about" class="nav-link px-2 text-white" routerLinkActive="active">About</a></li>
+        </ul>
+       
+        <div *ngIf="IsLoggedIn" class="pe-3 text-white">Hello, {{AccountName}}</div>
+        <div class="text-end">
+          <button *ngIf="!IsLoggedIn" type="button" class="btn btn-outline-light me-2" (click)="LoginClicked()">Login</button>
+          <button *ngIf="!IsLoggedIn" type="button" class="btn btn-warning" (click)="SignUpClicked()">Sign-up</button>
+          <button *ngIf="IsLoggedIn" type="button" class="btn btn-warning" (click)="LogoutClicked()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!--Register Form-->
+<div
+[ngStyle]="{ 'display': display }"
+class="modal" tabindex="-1" role="dialog"
+>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">{{ModalLable}}</h5>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+        (click)="onCloseHandled()"
+      ></button>
+    </div>
+
+    <div class="modal-body">
+      <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" (ngSubmit)="SaveChages()">
+        <div class="hstack gap-3">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Username:</h6>
+          <input
+          name="id"
+          [(ngModel)]="user.user_name" 
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Username..."
+            aria-label="Search"
+          />
+        </div>
+        <div class="hstack gap-3">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Password:</h6>
+          <input
+          name="name"
+          [(ngModel)]="user.password"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Password..."
+            aria-label="Search"
+          />
+        </div>
+        <div class="hstack gap-3" *ngIf="IsSignUpClicked">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Favorite Question:</h6>
+          <input
+          name="description"
+          [(ngModel)]="user.favorite_qn"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Set your favorite question..."
+            aria-label="Search"
+          />
+        </div>
+        <div class="hstack gap-3" *ngIf="IsSignUpClicked">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Set answer:</h6>
+          <input
+          name="unit_price"
+          [(ngModel)]="user.answer"
+            type="search"
+            class="form-control form-control-dark text-bg-dark"
+            placeholder="Set an answer..."
+            aria-label="Search"
+          />
+        </div>
+
+        
+        <div class="modal-footer mt-3">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="onCloseHandled()"
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            class="btn btn-warning"
+           
+          >
+           {{ModalbuttonLable}}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    
+  </div>
+</div>
+</div>
+
+<!--Info Modal-->
+<div
+[ngStyle]="{ 'display': info }"
+class="modal" tabindex="-1" role="dialog"
+>
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">Info!</h5>
+    </div>
+
+    <div class="modal-body">   
+          <h6 class="modal-title" id="exampleModalLabel">{{InfoLable}}</h6>  
+        </div>         
+        <div class="modal-footer mt-3">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            (click)="onCloseInfoHandled()"
+          >
+            Close
+          </button>
+    </div>     
+  </div>
+</div>
+</div>
