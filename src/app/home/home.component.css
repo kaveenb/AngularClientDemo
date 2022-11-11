@@ -1,0 +1,34 @@
+.demo-table {
+    width: 100%;
+  }
+  
+  .mat-row .mat-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+    background-color: RGBA(33,37,41,var(--bs-bg-opacity,1))!important;;
+    color: white;
+  }
+  
+  .mat-row:hover .mat-cell{
+    background-color: white;
+    color: yellow;
+  }
+  
+  .demo-row-is-clicked .mat-cell{
+    font-weight: bold;
+    background-color: red;
+    color: yellow;
+  }
+
+  .mat-header-row{
+    background-color: #ffc107;
+    font-weight: bold;
+    font-size: large;
+  }
+
+  .mat-header-cell{
+    font-size: large;
+    color: black;
+
+  }

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { ProductModel } from '../_models/ProductModel';
 import { HttpClient } from '@angular/common/http';
-import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
@@ -29,12 +28,13 @@ export class HomeComponent implements OnInit {
   DeleteSuccess: boolean = false;
   IsDeleteClicked: boolean = false;
   IsUpdateClicked: boolean = false;
+  IsRowClicked: boolean = false;
   IsServiceUp:boolean=true;
   IsLoggedIn=false;
   ModalLable:string='Add Product';
   InfoLable:string='Product Added successfully!';
-
-
+  ClickedRow = new Set<ProductModel>();
+  displayedColumns: string[] = ['id', 'name','description','unit_price'];
 
   constructor(private http: HttpClient) { }
   ngOnInit(): void {
@@ -122,6 +122,16 @@ export class HomeComponent implements OnInit {
     this.InfoLable='Product updated successfully!';
     this.IsUpdateClicked=true;
     this.openModal();
+  }
+
+  RowClick(row:ProductModel){
+    this.ClickedRow.clear();
+    this.ClickedRow.add(row);
+    if(this.ClickedRow.has(row))
+    this.IsRowClicked = true;
+    else
+    this.IsRowClicked = false;
+    console.log(row)
   }
 
   SetLogin(event:boolean){

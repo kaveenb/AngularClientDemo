@@ -11,7 +11,6 @@
         >
           <li><a href="#" class="nav-link px-2 text-white" routerLinkActive="active">Home</a></li>
           <li><a routerLink="/feature" class="nav-link px-2 text-white">Features</a></li>
-          <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
           <li><a routerLink="/about" class="nav-link px-2 text-white" routerLinkActive="active">About</a></li>
         </ul>
        
@@ -28,7 +27,7 @@
   <!--Register Form-->
 <div
 [ngStyle]="{ 'display': display }"
-class="modal" tabindex="-1" role="dialog"
+class="modal" style="z-index: auto;" role="dialog"
 >
 <div class="modal-dialog">
   <div class="modal-content">
@@ -56,7 +55,7 @@ class="modal" tabindex="-1" role="dialog"
             aria-label="Search"
           />
         </div>
-        <div class="hstack gap-3">
+        <div *ngIf="!IsForgotPwdClicked" class="hstack gap-3">
           <h6 class="modal-title w-25" id="exampleModalLabel">Password:</h6>
           <input
           name="name"
@@ -67,19 +66,25 @@ class="modal" tabindex="-1" role="dialog"
             aria-label="Search"
           />
         </div>
+        <h6 *ngIf="IsForgotPwdClicked" class="modal-title align-items-center" id="exampleModalLabel">{{user.favorite_qn}}</h6>
         <div class="hstack gap-3" *ngIf="IsSignUpClicked">
           <h6 class="modal-title w-25" id="exampleModalLabel">Favorite Question:</h6>
-          <input
-          name="description"
-          [(ngModel)]="user.favorite_qn"
-            type="search"
-            class="form-control form-control-dark text-bg-dark"
-            placeholder="Set your favorite question..."
-            aria-label="Search"
-          />
-        </div>
-        <div class="hstack gap-3" *ngIf="IsSignUpClicked">
-          <h6 class="modal-title w-25" id="exampleModalLabel">Set answer:</h6>
+          <!-- <mat-form-field class="form-control mb-0 mt-0 text-whitetext-bg-dark" appearance="fill" > -->
+            <mat-select 
+            [(ngModel)]="user.favorite_qn" 
+            name="favorite_qn" 
+            class="form-control"
+            placeholder="Your Favorite Question...">
+              <mat-option *ngFor="let qn of FavoriteQn" [value]="qn" 
+              class="bg-danger text-white">
+                {{qn}}
+              </mat-option>
+            </mat-select>
+          <!-- </mat-form-field> -->
+        </div> 
+        
+        <div class="hstack gap-3" *ngIf="IsSignUpClicked || IsForgotPwdClicked">
+          <h6 class="modal-title w-25" id="exampleModalLabel">Answer:</h6>
           <input
           name="unit_price"
           [(ngModel)]="user.answer"
@@ -92,6 +97,10 @@ class="modal" tabindex="-1" role="dialog"
 
         
         <div class="modal-footer mt-3">
+          <a  (click)="ForgorPwdClicked()" class="nav-link px-2 text-dark fas fa-hand-pointer"
+          *ngIf="!IsSignUpClicked"
+           style="cursor: pointer;">Forgot password?</a>
+          
           <button
             type="button"
             class="btn btn-secondary"
@@ -101,11 +110,20 @@ class="modal" tabindex="-1" role="dialog"
             Close
           </button>
           <button
+            *ngIf="!IsForgotPwdClicked"
             type="submit"
             class="btn btn-warning"
            
           >
            {{ModalbuttonLable}}
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning"
+            *ngIf="IsForgotPwdClicked"
+            (click)="CheckAnswerClick()"
+          >
+           Check Answer
           </button>
         </div>
       </form>
