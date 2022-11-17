@@ -1,6 +1,12 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output,ViewChild } from '@angular/core';
 import { ProductModel } from '../_models/ProductModel';
 import { HttpClient } from '@angular/common/http';
+import { MatSort} from '@angular/material/sort';
+import { MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import { SelectionModel } from '@angular/cdk/collections';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
+import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
@@ -24,31 +30,52 @@ export class HomeComponent implements OnInit {
     id: 0,
     category_id: 1,
   };
-  AddSuccess: boolean = false;
-  DeleteSuccess: boolean = false;
-  IsDeleteClicked: boolean = false;
-  IsUpdateClicked: boolean = false;
-  IsRowClicked: boolean = false;
-  IsServiceUp:boolean=true;
+  Id!:number;
+  AddSuccess = false;
+  DeleteSuccess = false;
+  IsDeleteClicked = false;
+  IsUpdateClicked = false;
+  IsRowClicked = false;
+  IsServiceUp=true;
   IsLoggedIn=false;
-  ModalLable:string='Add Product';
-  InfoLable:string='Product Added successfully!';
+  IsDataLoaded=false;
+  IsFireBaseUsed = false;
+  ModalLable='Add Product';
+  InfoLable='Product Added successfully!';
   ClickedRow = new Set<ProductModel>();
-  displayedColumns: string[] = ['id', 'name','description','unit_price'];
+  displayedColumns = ['id', 'name','description','unit_price'];
+  datasource = new MatTableDataSource<ProductModel>();
+  selection = new SelectionModel<ProductModel>(false, []);
+  
 
-  constructor(private http: HttpClient) { }
+  @ViewChild(MatSort) sort!:MatSort;
+  @ViewChild(MatPaginator) paginator!:MatPaginator;
+
+  constructor(private http: HttpClient,private fire:AngularFirestore,private nav:NavbarComponent) { }
   ngOnInit(): void {
     this.IsServiceUp=true;
     this.LoadProducts();
   }
-
+  
   LoadProducts(){
-    this.http.get('https://localhost:5001/api/product').subscribe({
-      next: (Response) => (this.product = Response),
-      error: (error) => {console.log(error);
-       this.IsServiceUp=false;
-      }
-    });
+    if(!this.IsFireBaseUsed){
+      this.IsDataLoaded=false;
+      this.http.get<ProductModel>('https://localhost:5001/api/product').subscribe({
+        next: (Response:ProductModel) =>{ (this.product = Response);this.IsDataLoaded=false; 
+           this.datasource.data = this.product;this.datasource.sort = this.sort; this.datasource.paginator = this.paginator;
+        },
+        error: (error) => {console.log(error);
+         this.IsServiceUp=false;
+        }
+      });
+    }else{
+      this.fire.collection<ProductModel>('products').valueChanges().subscribe({
+        next:(user:ProductModel[])=> {
+          this.product = user;
+          this.datasource.data = this.product;this.datasource.sort = this.sort; this.datasource.paginator = this.paginator;
+        }
+      });
+    }
   }
   SaveChages(){
     if(this.IsDeleteClicked)
@@ -60,21 +87,44 @@ export class HomeComponent implements OnInit {
   }
 
   Addingproduct() {
-    this.onCloseHandled();
-    this.openInfoModal();
-    return this.http
-      .post('https://localhost:5001/api/product', this.Addproduct)
-      .subscribe({
-        next: (Response) => {
-          this.AddSuccess = true;
-          return console.log(Response);
-        },
-        error: (error) => console.log(error),
-      });
+    if(!this.IsFireBaseUsed){
+      this.onCloseHandled();
+      this.openInfoModal();
+      this.http
+        .post('https://localhost:5001/api/product', this.Addproduct)
+        .subscribe({
+          next: (Response) => {
+            this.AddSuccess = true;
+            return console.log(Response);
+          },
+          error: (error) => console.log(error),
+        });
+    }else{
+      this.onCloseHandled();
+      this.openInfoModal();
+      this.Addproduct.sku = this.fire.createId();
+      this.fire.collection('products').doc(this.Addproduct.id.toString()).set({
+        name: this.Addproduct.name,
+        description: this.Addproduct.description,
+        sku: this.Addproduct.sku,
+        date_created: new Date(),
+        units_in_stock: this.Addproduct.units_in_stock,
+        unit_price: this.Addproduct.unit_price,
+        last_updated: new Date(),
+        active: this.Addproduct.active,
+        image_url: this.Addproduct.image_url,
+        id: this.Addproduct.id,
+        category_id: this.Addproduct.category_id
+      })
+    }
+    
   }
 
   delete() {
-     this.http
+    this.onCloseHandled();
+    this.openInfoModal();
+    if(!this.IsFireBaseUsed){
+      this.http
       .delete('https://localhost:5001/api/product/' + this.Addproduct.id)
       .subscribe({
         next: (Response) => {
@@ -85,10 +135,25 @@ export class HomeComponent implements OnInit {
         },
         error: (error) => console.log(error),
       });
-      this.onCloseHandled();
-      this.openInfoModal();
+    }else{
+      this.fire.doc('products/'+this.Addproduct.id).delete();
+    }
   }
 
+  DeleteSelected(){
+    if(!this.IsFireBaseUsed){
+      this.http
+      .delete('https://localhost:5001/api/product/' + this.Id)
+      .subscribe({
+        next: (Response) => {
+          return console.log(Response);
+        },
+        error: (error) => console.log(error),
+      });
+    }else{
+      this.fire.doc('products/'+this.Addproduct.id).delete();
+    }
+  }
   update() {
     this.onCloseHandled();
           this.openInfoModal();
@@ -116,7 +181,10 @@ export class HomeComponent implements OnInit {
     this.IsDeleteClicked=true;
     this.openModal();
   }
-
+  FirebaseSwitch(){
+    this.nav.IsFireBaseUsed = true;
+    this.ngOnInit();
+  }
   UpdateClick(){
     this.ModalLable='Update Product by Id';
     this.InfoLable='Product updated successfully!';
@@ -125,13 +193,15 @@ export class HomeComponent implements OnInit {
   }
 
   RowClick(row:ProductModel){
+    this.Id = row.id;
     this.ClickedRow.clear();
     this.ClickedRow.add(row);
     if(this.ClickedRow.has(row))
     this.IsRowClicked = true;
     else
     this.IsRowClicked = false;
-    console.log(row)
+    console.log(this.Id);
+
   }
 
   SetLogin(event:boolean){

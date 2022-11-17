@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UserModel } from '../_models/UserModel';
+import {AngularFirestore} from '@angular/fire/compat/firestore';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -10,6 +12,7 @@ import { UserModel } from '../_models/UserModel';
 })
 export class NavbarComponent implements OnInit {
   @Output() IsLoggedInEmit = new EventEmitter();
+  @Input() IsFireBaseUsed=false;
   display = "none";
   info = "none";
   IsSignUpClicked=false;
@@ -21,6 +24,7 @@ export class NavbarComponent implements OnInit {
   AccountName!:string;
   SelectedQn!:string;
   CheckAnswer!:string;
+  SlideLable!:string;
   user:UserModel={
     user_name:'',
     password:'',
@@ -31,10 +35,9 @@ export class NavbarComponent implements OnInit {
   FavoriteQn:string[] = ['Favorite Teacher?','Favorite Actor?','Favorite Actress?','Place of Birth?','Name of your pet?'];
 
 
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient,private fire:AngularFirestore) { }
 
   ngOnInit(): void {
-    this.CurrentLogger();
   }
   SaveChages(){
     if(!this.IsForgotPwdClicked && this.IsSignUpClicked){
@@ -62,7 +65,6 @@ export class NavbarComponent implements OnInit {
   CurrentLogger(){
     const currentUser = JSON.parse(localStorage.getItem('user')!);
     if(currentUser.user_name!=='' || currentUser.password!==''){
-      console.log(currentUser);
       this.IsLoggedIn=true;
                 this.IsLoggedInEmit.emit(true);
                 this.AccountName=currentUser.user_name;
@@ -71,6 +73,8 @@ export class NavbarComponent implements OnInit {
 
   Login(){
     this.onCloseHandled();
+    if(!this.IsFireBaseUsed){
+      this.onCloseHandled();
       this.http.post<UserModel>('https://localhost:5001/User/login',this.user).subscribe({
         next: (Response:UserModel) => {
           if(Response){
@@ -85,6 +89,20 @@ export class NavbarComponent implements OnInit {
         },
         error: (Response)=>console.log(Response)
       })
+    }
+    else{
+      this.fire.collection<UserModel>('user').valueChanges().subscribe({
+        next:(user:UserModel[])=> {
+          if(this.user.user_name===user[0].user_name && this.user.password===user[0].password){
+                  this.IsLoggedIn=true;
+                  this.IsLoggedInEmit.emit(true);
+                  this.AccountName=user[0].user_name;
+                  localStorage.setItem('user', JSON.stringify(user[0]))
+          }else
+          this.openInfoModal();
+        }
+      });
+    }
   }
   SignUp(){
     this.onCloseHandled();
@@ -124,6 +142,7 @@ export class NavbarComponent implements OnInit {
     })
   }
    LoginClicked(){
+    console.log(this.IsFireBaseUsed);
     this.IsForgotPwdClicked=false;
     this.ModalLable='Login to your account!';
     this.InfoLable='Login failed! Incorrect Username or Password';
