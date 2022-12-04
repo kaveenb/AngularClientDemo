@@ -12,6 +12,7 @@
           <li><a href="#" class="nav-link px-2 text-white" routerLinkActive="active">Home</a></li>
           <li><a routerLink="/feature" class="nav-link px-2 text-white">Features</a></li>
           <li><a routerLink="/about" class="nav-link px-2 text-white" routerLinkActive="active">About</a></li>
+          <li><a routerLink="/checklist" class="nav-link px-2 text-white" routerLinkActive="active">CheckList</a></li>
         </ul>
         <div *ngIf="IsLoggedIn" class="pe-3 text-white">Hello, {{AccountName}}</div>
         <div class="text-end">
@@ -26,7 +27,7 @@
   <!--Register Form-->
 <div
 [ngStyle]="{ 'display': display }"
-class="modal" style="z-index: auto;" role="dialog"
+class="modal" style="z-index: 2;"  role="dialog"
 >
 <div class="modal-dialog">
   <div class="modal-content">

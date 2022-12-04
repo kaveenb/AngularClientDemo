@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
   IsServiceUp=true;
   IsLoggedIn=false;
   IsDataLoaded=false;
-  IsFireBaseUsed = false;
+  IsFireBaseUsed = true;
   ModalLable='Add Product';
   InfoLable='Product Added successfully!';
   ClickedRow = new Set<ProductModel>();
@@ -95,14 +95,12 @@ export class HomeComponent implements OnInit {
         .subscribe({
           next: (Response) => {
             this.AddSuccess = true;
-            return console.log(Response);
           },
           error: (error) => console.log(error),
         });
     }else{
       this.onCloseHandled();
       this.openInfoModal();
-      this.Addproduct.sku = this.fire.createId();
       this.fire.collection('products').doc(this.Addproduct.id.toString()).set({
         name: this.Addproduct.name,
         description: this.Addproduct.description,
@@ -131,7 +129,6 @@ export class HomeComponent implements OnInit {
           this.DeleteSuccess = true;
           this.onCloseHandled();
           this.openInfoModal();
-          return console.log(Response);
         },
         error: (error) => console.log(error),
       });
@@ -163,7 +160,6 @@ export class HomeComponent implements OnInit {
         next: (Response) => {
           this.onCloseHandled();
           this.openInfoModal();
-          return console.log(Response);
         },
         error: (error) => console.log(error),
       });
@@ -200,8 +196,6 @@ export class HomeComponent implements OnInit {
     this.IsRowClicked = true;
     else
     this.IsRowClicked = false;
-    console.log(this.Id);
-
   }
 
   SetLogin(event:boolean){

@@ -19,9 +19,10 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSortModule} from '@angular/material/sort';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { ChecklistComponent } from './checklist/checklist.component';
 
 @NgModule({
-  declarations: [AppComponent, AboutComponent, HomeComponent, FeatureComponent, NavbarComponent, FooterComponent],
+  declarations: [AppComponent, AboutComponent, HomeComponent, FeatureComponent, NavbarComponent, FooterComponent, ChecklistComponent],
   imports: [BrowserModule, FormsModule, HttpClientModule,
      AppRoutingModule,MatSelectModule,MatFormFieldModule,
      BrowserAnimationsModule,MatTableModule,MatProgressSpinnerModule,MatSortModule,MatPaginatorModule,MatSlideToggleModule,

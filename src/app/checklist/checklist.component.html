@@ -1,0 +1,113 @@
+<app-navbar (IsLoggedInEmit)="SetLogin($event)"></app-navbar>
+<div class="container mt-4" >
+    <div class="p-4 rounded">
+        <h2 class="text-dark rounded" style="background-color: #f4f4f4;width: fit-content;">Is all set to go?</h2>
+     <div>
+        <table mat-table matSort [dataSource]="datasource" class="mat-elevation-z8 demo-table rounded">
+          <!-- Position Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell mat-sort-header-container mat-sort-header *matHeaderCellDef>No.</th>
+            <td mat-cell *matCellDef="let element">{{element.id}}</td>
+          </ng-container>
+        
+          <!-- Name Column -->
+          <ng-container matColumnDef="item">
+            <th mat-header-cell mat-sort-header-container mat-sort-header *matHeaderCellDef>Item</th>
+            <td mat-cell *matCellDef="let element">{{element.item}}</td>
+          </ng-container>
+        
+          <!-- Weight Column -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell mat-sort-header-container mat-sort-header *matHeaderCellDef>Description</th>
+            <td mat-cell *matCellDef="let element">{{element.description}}</td>
+          </ng-container>
+        
+          <!-- Symbol Column -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell mat-sort-header-container mat-sort-header *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element">{{element.action}}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr
+              id="rowclick"
+              mat-row
+              (click)="RowClick(row)"
+              [class.demo-row-is-clicked]="ClickedRow.has(row)"
+              *matRowDef="let row; columns: displayedColumns;"
+          ></tr>
+        </table>
+         <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons style="width: 100%;"></mat-paginator>
+        </div>
+      </div>
+
+
+      <div class="p-4 rounded">
+        <div *ngIf="!IsLoggedIn" class="bg-danger text-white rounded">Please login to ADD | UPDATE | DELETE items</div>
+      <div *ngIf="IsLoggedIn" class="text-end">
+        <form class="" role="search" (ngSubmit)="save()">
+            <div class="hstack gap-3">
+                <input
+                name="id"
+                [(ngModel)]="Addchecklist.id" 
+                  type="search"
+                  class="form-control form-control-dark text-bg-dark"
+                  placeholder="id..."
+                  aria-label="Search"
+                />
+              <input
+              name="item"
+              [(ngModel)]="Addchecklist.item" 
+                type="search"
+                class="form-control form-control-dark text-bg-dark"
+                placeholder="Item name..."
+                aria-label="Search"
+              />
+              <mat-select 
+            [(ngModel)]="Addchecklist.description"
+            name="description" 
+            class="form-control"
+            >
+              <mat-option *ngFor="let qn of Category" [value]="qn" 
+              class="bg-danger text-white">
+                {{qn}}
+              </mat-option>
+            </mat-select>
+              <mat-select 
+            [(ngModel)]="Addchecklist.action" 
+            name="action" 
+            class="form-control"
+            >
+              <mat-option *ngFor="let qn of Actionitems" [value]="qn" 
+              class="bg-danger text-white">
+                {{qn}}
+              </mat-option>
+            </mat-select>
+              <button
+              type="button"
+              class="btn btn-warning"
+              type="submit"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              class="btn btn-warning"
+              (click)="Update()"
+            >
+              Update
+            </button>
+            <button
+            type="button"
+            class="btn btn-warning"
+            (click)="Delete()"
+          >
+            Delete
+          </button>
+            </div>
+          </form>
+       
+      </div>
+    </div>
+  </div>
+

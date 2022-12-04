@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 })
 export class NavbarComponent implements OnInit {
   @Output() IsLoggedInEmit = new EventEmitter();
-  @Input() IsFireBaseUsed=false;
+  @Input() IsFireBaseUsed=true;
   display = "none";
   info = "none";
   IsSignUpClicked=false;
@@ -38,6 +38,7 @@ export class NavbarComponent implements OnInit {
   constructor(private http:HttpClient,private fire:AngularFirestore) { }
 
   ngOnInit(): void {
+    this.CurrentLogger();
   }
   SaveChages(){
     if(!this.IsForgotPwdClicked && this.IsSignUpClicked){
@@ -142,7 +143,6 @@ export class NavbarComponent implements OnInit {
     })
   }
    LoginClicked(){
-    console.log(this.IsFireBaseUsed);
     this.IsForgotPwdClicked=false;
     this.ModalLable='Login to your account!';
     this.InfoLable='Login failed! Incorrect Username or Password';
@@ -157,7 +157,7 @@ export class NavbarComponent implements OnInit {
   }
   SignUpClicked(){
     this.IsForgotPwdClicked=false;
-    this.ModalLable='Sign-Up for free!';
+    this.ModalLable=!this.IsFireBaseUsed?'Sign-Up for free!':'Not implemented for Firebase';
     this.ModalbuttonLable='Sign-Up';
     this.IsSignUpClicked=true;
     this.openModal();
@@ -198,7 +198,6 @@ export class NavbarComponent implements OnInit {
     this.IsSignUpClicked=false;
     this.IsForgotPwdClicked=false;
     this.IsLoggedIn=false;
-    this.InfoLable='';
     this.ModalbuttonLable='';
     this.ModalLable='';
     this.AccountName='';

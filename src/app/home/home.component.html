@@ -1,14 +1,18 @@
 <app-navbar (IsLoggedInEmit)="SetLogin($event)" [IsFireBaseUsed]="IsFireBaseUsed"></app-navbar>
 <div class="container mt-4" >
     <div class="p-4 p-md-5 rounded">
-        <h2 class="text-dark">Available Products!</h2>
-        <mat-slide-toggle class="pe-3 mb-2" [(ngModel)]="IsFireBaseUsed" (change)="FirebaseSwitch()">Switch to {{IsFireBaseUsed?'MySQL':'FireBase'}}</mat-slide-toggle>
+        <h2 class="text-dark rounded" style="background-color: #f4f4f4;width: fit-content;">Available Products!</h2>
+        <mat-slide-toggle class="pe-3 mb-2 text-success" [(ngModel)]="IsFireBaseUsed"
+         (change)="FirebaseSwitch()"
+         style="background-color: #f4f4f4;width: fit-content;"
+         >Switch to {{IsFireBaseUsed?'MySQL':'FireBase'}}</mat-slide-toggle>
      <div>
       <div *ngIf="!IsServiceUp" class="p-3 mb-2 bg-danger text-white rounded">
         <h5>C# Service not up! Please switch to Firebase using above toggle</h5>
         <p>Please navigate to GitHub (bottom right icon) for C# webservice source code.
           You also need MySQL or SQL server for running webserivce using ASP.NET Core.</p>
       </div>
+      <div>
         <table mat-table matSort [dataSource]="datasource" class="mat-elevation-z8 demo-table rounded">
           <!-- Position Column -->
           <ng-container matColumnDef="id">
@@ -43,14 +47,8 @@
               *matRowDef="let row; columns: displayedColumns;"
           ></tr>
         </table>
-         <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons></mat-paginator>
-        <div *ngIf="IsDataLoaded" 
-        style="display: flex; justify-content: center; align-items: center; background: white;">
-        <mat-progress-spinner 
-  color="secondary" 
-  mode="indeterminate">
-        </mat-progress-spinner>
-      </div>
+         <mat-paginator [pageSizeOptions]="[5,10,20]" showFirstLastButtons style="width: 100%;"></mat-paginator>
+        </div>
         <!-- <table class="table text-white">
           <thead class="thead-light">
             <tr>
